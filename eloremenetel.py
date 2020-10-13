@@ -15,13 +15,13 @@ import time
 import numpy as np
 import cv2
 
-IM_WIDTH = 640
-IM_HEIGHT = 480
+#IM_WIDTH = 640
+#IM_HEIGHT = 480
 
 
 def process_img(image):
     i = np.array(image.raw_data)
-    i2 = i.reshape((IM_HEIGHT, IM_WIDTH, 4))
+    i2 = i.reshape((480, 640, 4))
     i3 = i2[:, :, :3]
     cv2.imshow("", i3)
     cv2.waitKey(1)
@@ -52,8 +52,8 @@ try:
     # get the blueprint for this sensor
     blueprint = blueprint_library.find('sensor.camera.rgb')
     # change the dimensions of the image
-    blueprint.set_attribute('image_size_x', f'{IM_WIDTH}')
-    blueprint.set_attribute('image_size_y', f'{IM_HEIGHT}')
+    blueprint.set_attribute('image_size_x', '640')
+    blueprint.set_attribute('image_size_y', '480')
     blueprint.set_attribute('fov', '110')
 
     # Adjust sensor relative to vehicle
