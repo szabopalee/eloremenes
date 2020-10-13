@@ -69,7 +69,7 @@ try:
     # do something with this sensor
     sensor.listen(lambda data: process_img(data))
 
-    time.sleep(5)
+    time.sleep(15)
 
 finally:
     print('destroying actors')
