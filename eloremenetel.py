@@ -20,11 +20,12 @@ import cv2
 
 
 def process_img(image):
+    image.save_to_disk('output/%06d.png' % image.frame)
     i = np.array(image.raw_data)
     i2 = i.reshape((480, 640, 4))
     i3 = i2[:, :, :3]
-    cv2.imshow("", i3)
-    cv2.waitKey(1)
+    #cv2.imshow("", i3)
+    #cv2.waitKey(1)
     return i3/255.0
 
 
