@@ -15,9 +15,12 @@ import time
 import numpy as np
 import cv2
 
+import pygame
+
 #IM_WIDTH = 640
 #IM_HEIGHT = 480
 
+# Global functions
 
 def process_img(image):
     image.save_to_disk('output/%06d.png' % image.frame)
@@ -35,6 +38,12 @@ def process_img(image):
 
 actor_list = []
 try:
+    pygame.init()
+
+    display = pygame.display.set_mode(
+        (args.width, args.height),
+        pygame.HWSURFACE | pygame.DOUBLEBUF)
+
     client = carla.Client('localhost', 2000)
     client.set_timeout(2.0)
 
@@ -69,7 +78,10 @@ try:
     # kimentjük a képeket png fileokba
     sensor.listen(lambda data: process_img(data))
 
-    time.sleep(15)
+    while 1:
+        world.render(display)
+        pygame.display.flip()
+        time.sleep(15)
 
 finally:
     print('destroying actors')
