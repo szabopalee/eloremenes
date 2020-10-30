@@ -84,7 +84,6 @@ try:
 
     while 1:
         sensor.listen(lambda data: process_img(data, display))
-        world.render(display)
         pygame.display.flip()
 
 
