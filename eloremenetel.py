@@ -39,7 +39,7 @@ def process_img(image):
     i3 = i2[:, :, :3]
 
 
-    surface = pygame.surfarray.make_surface(i)
+    surface = pygame.surfarray.make_surface(i3.swapaxes(0,1))
     display.blit(surface, (0,0))
     pygame.display.flip()
 
