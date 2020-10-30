@@ -84,8 +84,9 @@ try:
     # kimentjük a képeket png fileokba
     #sensor.listen(lambda data: process_img(data))
 
-    while 1:
-        sensor.listen(lambda data: process_img(data))
+    sensor.listen(lambda data: process_img(data))
+    
+    sleep(15)
 
 
 finally:
