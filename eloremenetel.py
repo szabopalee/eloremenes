@@ -80,8 +80,8 @@ try:
     #sensor.listen(lambda data: process_img(data))
 
     while 1:
-        sensor.listen(lambda data: process_img(data))
-        surface = pygame.surfarray.make_surface(data)
+        img = sensor.listen(lambda data: process_img(data))
+        surface = pygame.surfarray.make_surface(img)
         display.blit(surface, (0,0))
         pygame.display.flip()
 
