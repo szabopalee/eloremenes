@@ -35,7 +35,7 @@ def process_img(image):
     #egy lehetseges feldolgozas lehetne: 
 
     i = np.array(image.raw_data)
-    i2 = i.reshape((480, 640, 4))
+    i2 = i.reshape((640, 480, 4))
     i3 = i2[:, :, :3]
 
 
