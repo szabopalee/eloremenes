@@ -86,7 +86,7 @@ try:
 
     sensor.listen(lambda data: process_img(data))
     
-    sleep(15)
+    time.sleep(15)
 
 
 finally:
