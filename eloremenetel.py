@@ -32,9 +32,11 @@ def process_img(image, display):
     i2 = i.reshape((480, 640, 4))
     i3 = i2[:, :, :3]
 
+    print("itt3")
     surface = pygame.surfarray.make_surface(i3)
+    print("itt4")
     display.blit(surface, (0,0))
-
+    print("itt5")
     #cv2.imshow("", i3)
     #cv2.waitKey(1)
     return i3/255.0
@@ -71,7 +73,6 @@ try:
     blueprint.set_attribute('image_size_x', '640')
     blueprint.set_attribute('image_size_y', '480')
     blueprint.set_attribute('fov', '110')
-    print("itt1")
     # kamera elhelyezes a kocsin
     spawn_point = carla.Transform(carla.Location(x=2.5, z=0.7))
 
@@ -83,7 +84,6 @@ try:
     #sensor.listen(lambda data: process_img(data))
 
     while 1:
-        print("itt2")
         sensor.listen(lambda data: process_img(data, display))
         pygame.display.flip()
 
