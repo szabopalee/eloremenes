@@ -41,7 +41,7 @@ try:
     pygame.init()
 
     display = pygame.display.set_mode(
-        ('640', '480'),
+        (640, 480),
         pygame.HWSURFACE | pygame.DOUBLEBUF)
 
     client = carla.Client('localhost', 2000)
