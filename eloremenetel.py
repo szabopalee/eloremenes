@@ -22,6 +22,12 @@ import pygame
 
 # Global functions
 
+pygame.init()
+
+display = pygame.display.set_mode(
+    (640, 480),
+    pygame.HWSURFACE | pygame.DOUBLEBUF)
+
 def process_img(image):
     #image.save_to_disk('output/%06d.png' % image.frame)
 
@@ -33,19 +39,18 @@ def process_img(image):
     i3 = i2[:, :, :3]
 
 
+    surface = pygame.surfarray.make_surface(i3)
+    display.blit(surface, (0,0))
+    pygame.display.flip()
+
+
     #cv2.imshow("", i3)
     #cv2.waitKey(1)
-    return i3
+    return i3/255
 
 
 actor_list = []
 try:
-    pygame.init()
-
-    display = pygame.display.set_mode(
-        (640, 480),
-        pygame.HWSURFACE | pygame.DOUBLEBUF)
-
     client = carla.Client('localhost', 2000)
     client.set_timeout(2.0)
 
@@ -80,10 +85,7 @@ try:
     #sensor.listen(lambda data: process_img(data))
 
     while 1:
-        img = sensor.listen(lambda data: process_img(data))
-        surface = pygame.surfarray.make_surface(img)
-        display.blit(surface, (0,0))
-        pygame.display.flip()
+        sensor.listen(lambda data: process_img(data))
 
 
 finally:
