@@ -21,12 +21,16 @@ import cv2
 
 def process_img(image):
     image.save_to_disk('output/%06d.png' % image.frame)
-    #i = np.array(image.raw_data)
-    #i2 = i.reshape((480, 640, 4))
-    #i3 = i2[:, :, :3]
+
+
+    #egy lehetseges feldolgozas lehetne: 
+
+    i = np.array(image.raw_data)
+    i2 = i.reshape((480, 640, 4))
+    i3 = i2[:, :, :3]
     #cv2.imshow("", i3)
     #cv2.waitKey(1)
-    return #i3/255.0
+    return i3/255.0
 
 
 actor_list = []
@@ -38,35 +42,31 @@ try:
 
     blueprint_library = world.get_blueprint_library()
 
-    bp = blueprint_library.filter('model3')[0]
+    bp = blueprint_library.filter('model3')[0]   # Tesla Model3
     print(bp)
 
-    spawn_point = random.choice(world.get_map().get_spawn_points())
+    spawn_point = random.choice(world.get_map().get_spawn_points())   # random spawn point
 
     vehicle = world.spawn_actor(bp, spawn_point)
-    vehicle.apply_control(carla.VehicleControl(throttle=1.0, steer=0.0))
-    # vehicle.set_autopilot(True)  # if you just wanted some NPCs to drive.
+    vehicle.apply_control(carla.VehicleControl(throttle=1.0, steer=0.0))   # arra utasítjuk egyelőre, hogy csak menjen előre
 
     actor_list.append(vehicle)
 
-    # https://carla.readthedocs.io/en/latest/cameras_and_sensors
-    # get the blueprint for this sensor
+    # kamera 
     blueprint = blueprint_library.find('sensor.camera.rgb')
-    # change the dimensions of the image
+    # kamera tulajdonsagainak beallitasa
     blueprint.set_attribute('image_size_x', '640')
     blueprint.set_attribute('image_size_y', '480')
     blueprint.set_attribute('fov', '110')
 
-    # Adjust sensor relative to vehicle
+    # kamera elhelyezes a kocsin
     spawn_point = carla.Transform(carla.Location(x=2.5, z=0.7))
 
-    # spawn the sensor and attach to vehicle.
     sensor = world.spawn_actor(blueprint, spawn_point, attach_to=vehicle)
 
-    # add sensor to list of actors
     actor_list.append(sensor)
 
-    # do something with this sensor
+    # kimentjük a képeket png fileokba
     sensor.listen(lambda data: process_img(data))
 
     time.sleep(15)
