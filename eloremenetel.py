@@ -76,12 +76,14 @@ try:
     actor_list.append(sensor)
 
     # kimentjük a képeket png fileokba
-    sensor.listen(lambda data: process_img(data))
+    #sensor.listen(lambda data: process_img(data))
 
     while 1:
+        surface = pygame.surfarray.make_surface(sensor.listen())
+        display.blit(surface, (0,0))
         world.render(display)
         pygame.display.flip()
-        time.sleep(15)
+
 
 finally:
     print('destroying actors')
