@@ -22,8 +22,8 @@ import pygame
 
 # Global functions
 
-def process_img(image):
-    image.save_to_disk('output/%06d.png' % image.frame)
+def process_img(image, display):
+    #image.save_to_disk('output/%06d.png' % image.frame)
 
 
     #egy lehetseges feldolgozas lehetne: 
@@ -31,6 +31,10 @@ def process_img(image):
     i = np.array(image.raw_data)
     i2 = i.reshape((480, 640, 4))
     i3 = i2[:, :, :3]
+
+    surface = pygame.surfarray.make_surface(i3)
+    display.blit(surface, (0,0))
+
     #cv2.imshow("", i3)
     #cv2.waitKey(1)
     return i3/255.0
@@ -79,11 +83,7 @@ try:
     #sensor.listen(lambda data: process_img(data))
 
     while 1:
-        i = np.array(sensor.listen().raw_data)
-        i2 = i.reshape((480, 640, 4))
-        i3 = i2[:, :, :3]
-        surface = pygame.surfarray.make_surface(i3)
-        display.blit(surface, (0,0))
+        sensor.listen(lambda data: process_img(data, display))
         world.render(display)
         pygame.display.flip()
 
