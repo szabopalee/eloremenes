@@ -76,7 +76,7 @@ try:
     blueprint.set_attribute('image_size_y', '480')
     blueprint.set_attribute('fov', '110')
     # kamera elhelyezes a kocsin
-    spawn_point = carla.Transform(carla.Location(x=2.5, z=2))
+    spawn_point = carla.Transform(carla.Location(x=-10, z=2))  # 2.5 0.7
 
     sensor = world.spawn_actor(blueprint, spawn_point, attach_to=vehicle)
 
