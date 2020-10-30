@@ -37,6 +37,7 @@ def process_img(image):
     i = np.array(image.raw_data)
     i2 = i.reshape((480, 640, 4))
     i3 = i2[:, :, :3]
+    i3 = i3[:,:,::-1]
 
 
     surface = pygame.surfarray.make_surface(i3.swapaxes(0,1))
