@@ -766,6 +766,7 @@ class MyControl(object):
             current_lights = self._lights
         self._control.throttle = min(self._control.throttle + 0.01, 1)
         world.player.apply_control(self._control)
+        return False
 
 
 def game_loop(args):
@@ -793,6 +794,7 @@ def game_loop(args):
             world.tick(clock)
             world.render(display)
             pygame.display.flip()
+        print("Hello")
 
     finally:
 
