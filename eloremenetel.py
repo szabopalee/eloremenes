@@ -95,4 +95,4 @@ client.set_timeout(2.0)
 world = World(client.get_world())
 
 while 1:
-    sleep(1)
+    time.sleep(1)
