@@ -13,7 +13,7 @@ import carla
 import random
 import time
 import numpy as np
-import cv2
+import weakref
 
 import pygame
 
