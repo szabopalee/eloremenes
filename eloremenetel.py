@@ -62,8 +62,7 @@ class World(object):
         blueprint3 = blueprint_library.find('sensor.other.collision')
         self.collision_sensor = self.world.spawn_actor(blueprint3, carla.Transform(), attach_to=vehicle)
         self.actor_list.append(self.collision_sensor)
-        weak_self = weakref.ref(self)
-        self.collision_sensor.listen(lambda event: World.on_collission(weak_self, event)) # weak ref??
+        self.collision_sensor.listen(lambda event: World.on_collission(event)) # weak ref??
 
     def destroy_actors(self):
         print('destroying actors')
@@ -85,8 +84,7 @@ class World(object):
 
         return i3/255
 
-    def on_collission(weak_self, event):
-        self = weak_self
+    def on_collission(self, event):
         self.restart()
 
 client = carla.Client('localhost', 2000)
