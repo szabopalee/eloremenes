@@ -35,7 +35,7 @@ def process_img(image):
     #egy lehetseges feldolgozas lehetne: 
 
     i = np.array(image.raw_data)
-    i2 = i.reshape((480, 640, 4))
+    i2 = i.reshape((240, 320, 4))
     i3 = i2[:, :, :3]
     i3 = i3[:,:,::-1]
 
@@ -72,8 +72,8 @@ try:
     # kamera 
     blueprint = blueprint_library.find('sensor.camera.rgb')
     # kamera tulajdonsagainak beallitasa
-    blueprint.set_attribute('image_size_x', '640')
-    blueprint.set_attribute('image_size_y', '480')
+    blueprint.set_attribute('image_size_x', '320')
+    blueprint.set_attribute('image_size_y', '240')
     blueprint.set_attribute('fov', '110')
     # kamera elhelyezes a kocsin
     spawn_point = carla.Transform(carla.Location(x=2.5, z=0.7))
