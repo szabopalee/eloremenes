@@ -60,7 +60,7 @@ class World(object):
         
         #utkozes szenzor
         blueprint3 = blueprint_library.find('sensor.other.collision')
-        self.collision_sensor = spawn_actor(blueprint3, carla.Transform(), attach_to=vehicle)
+        self.collision_sensor = self.world.spawn_actor(blueprint3, carla.Transform(), attach_to=vehicle)
         self.actor_list.append(self.collision_sensor)
         weak_self = weakref.ref(self)
         self.collision_sensor.listen(lambda event: World.on_collission(weak_self, event)) # weak ref??
@@ -93,5 +93,6 @@ client = carla.Client('localhost', 2000)
 client.set_timeout(2.0)
 
 world = World(client.get_world())
+
 while 1:
     sleep(1)
