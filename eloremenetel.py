@@ -28,70 +28,70 @@ display = pygame.display.set_mode(
     (640, 480),
     pygame.HWSURFACE | pygame.DOUBLEBUF)
 
-def process_img(image):
-    #image.save_to_disk('output/%06d.png' % image.frame)
+class World(object):
+    def __init__(self, carla_world):
+        self.actor_list = []
+        self.world = carla_world
+        self.restart()
+    def restart(self):
+        self.destroy_actors()
 
+        blueprint_library = self.world.get_blueprint_library()
 
-    #egy lehetseges feldolgozas lehetne: 
+        blueprint = blueprint_library.filter('model3')[0]   # Tesla Model3
+        print(blueprint)
 
-    i = np.array(image.raw_data)
-    i2 = i.reshape((240, 320, 4))
-    i3 = i2[:, :, :3]
-    i3 = i3[:,:,::-1]
+        spawn_point = random.choice(self.world.get_map().get_spawn_points())   # random spawn point
 
+        vehicle = self.world.spawn_actor(blueprint, spawn_point)
+        vehicle.apply_control(carla.VehicleControl(throttle=1.0, steer=0.0))   # arra utasítjuk egyelőre, hogy csak menjen előre
 
-    surface = pygame.surfarray.make_surface(i3.swapaxes(0,1))
-    display.blit(surface, (0,0))
-    pygame.display.flip()
+        self.actor_list.append(vehicle)
 
+        # kamera 
+        blueprint2 = blueprint_library.find('sensor.camera.rgb')
+        blueprint2.set_attribute('image_size_x', '640')
+        blueprint2.set_attribute('image_size_y', '480')
+        blueprint2.set_attribute('fov', '110')
+        spawn_point = carla.Transform(carla.Location(x=2.5, z=0.7))
+        self.sensor = self.world.spawn_actor(blueprint2, spawn_point, attach_to=vehicle)
+        self.actor_list.append(self.sensor)
+        self.sensor.listen(lambda data: World.process_img(data))
+        
+        #utkozes szenzor
+        blueprint3 = blueprint_library.find('sensor.other.collision')
+        self.collision_sensor = spawn_actor(blueprint3, carla.Transform(), attach_to=vehicle)
+        self.actor_list.append(self.collision_sensor)
+        weak_self = weakref.ref(self)
+        self.collision_sensor.listen(lambda event: World.on_collission(weak_self, event)) # weak ref??
 
-    #cv2.imshow("", i3)
-    #cv2.waitKey(1)
-    return i3/255
+    def destroy_actors(self):
+        print('destroying actors')
+        for actor in self.actor_list:
+            actor.destroy()
+        print('done.')
 
+    def process_img(image):
+        #image.save_to_disk('output/%06d.png' % image.frame)   # fileok kimentese png-be
+        #egy lehetseges feldolgozas: 
+        i = np.array(image.raw_data)
+        i2 = i.reshape((480, 640, 4))
+        i3 = i2[:, :, :3]
+        i3 = i3[:,:,::-1]
 
-actor_list = []
-try:
-    client = carla.Client('localhost', 2000)
-    client.set_timeout(2.0)
+        surface = pygame.surfarray.make_surface(i3.swapaxes(0,1))
+        display.blit(surface, (0,0))
+        pygame.display.flip()
 
-    world = client.get_world()
+        return i3/255
 
-    blueprint_library = world.get_blueprint_library()
+    def on_collission(weak_self, event):
+        self = weak_self
+        self.restart()
 
-    bp = blueprint_library.filter('model3')[0]   # Tesla Model3
-    print(bp)
+client = carla.Client('localhost', 2000)
+client.set_timeout(2.0)
 
-    spawn_point = random.choice(world.get_map().get_spawn_points())   # random spawn point
-
-    vehicle = world.spawn_actor(bp, spawn_point)
-    vehicle.apply_control(carla.VehicleControl(throttle=1.0, steer=0.0))   # arra utasítjuk egyelőre, hogy csak menjen előre
-
-    actor_list.append(vehicle)
-
-    # kamera 
-    blueprint = blueprint_library.find('sensor.camera.rgb')
-    # kamera tulajdonsagainak beallitasa
-    blueprint.set_attribute('image_size_x', '320')
-    blueprint.set_attribute('image_size_y', '240')
-    blueprint.set_attribute('fov', '110')
-    # kamera elhelyezes a kocsin
-    spawn_point = carla.Transform(carla.Location(x=2.5, z=0.7))
-
-    sensor = world.spawn_actor(blueprint, spawn_point, attach_to=vehicle)
-
-    actor_list.append(sensor)
-
-    # kimentjük a képeket png fileokba
-    #sensor.listen(lambda data: process_img(data))
-
-    sensor.listen(lambda data: process_img(data))
-    
-    time.sleep(15)
-
-
-finally:
-    print('destroying actors')
-    for actor in actor_list:
-        actor.destroy()
-    print('done.')
+world = World(client.get_world())
+while 1:
+    sleep(1)
